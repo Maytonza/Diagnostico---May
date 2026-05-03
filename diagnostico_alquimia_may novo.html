@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico Empresarial — Mayara Tonza</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --creme:    #F5F0E8;
+    --bege:     #E8DDD0;
+    --marrom-claro: #C4A882;
+    --marrom:   #8B6B4A;
+    --marrom-escuro: #5C3D2E;
+    --chocolate: #3B2315;
+    --dourado:  #C9A84C;
+    --dourado-claro: #E8C97A;
+    --texto:    #2C1810;
+    --texto-meio: #6B4C35;
+    --texto-leve: #9B7B5E;
+    --branco:   #FFFDF9;
+    --sombra:   rgba(59,35,21,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--chocolate);
+    color: var(--dourado-claro);
+    font-family: 'Lato', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 9px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 18s linear infinite;
+  }
+  .ticker-inner span { margin: 0 32px; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(160deg, var(--marrom-escuro) 0%, var(--chocolate) 100%);
+    padding: 48px 24px 52px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9A84C' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dourado);
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 6vw, 48px);
+    font-weight: 700;
+    color: var(--creme);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--dourado-claro);
+  }
+  .header-sub {
+    font-size: 15px;
+    color: var(--marrom-claro);
+    max-width: 480px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .price-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 100px;
+    padding: 10px 24px;
+    color: var(--creme);
+    font-size: 14px;
+  }
+  .price-tag strong { font-size: 22px; color: var(--dourado-claro); }
+  .price-tag s { color: var(--texto-leve); font-size: 13px; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--bege);
+    border-bottom: 1px solid rgba(139,107,74,0.2);
+    padding: 14px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--texto-leve);
+    margin-bottom: 8px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(139,107,74,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--marrom), var(--dourado));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .steps-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(139,107,74,0.25);
+    transition: all 0.3s;
+  }
+  .dot.active { background: var(--marrom); width: 18px; border-radius: 3px; }
+  .dot.done { background: var(--dourado); }
+
+  /* ── CONTAINER ── */
+  .container {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* ── STEPS ── */
+  .step { display: none; }
+  .step.active { display: block; animation: fadeUp 0.35s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+  .step-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--marrom-claro);
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    color: var(--chocolate);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .step-desc {
+    font-size: 14px;
+    color: var(--texto-leve);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--bege);
+    border-left: 3px solid var(--marrom-claro);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--texto-meio);
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--chocolate); font-weight: 700; }
+
+  /* ── FIELD ── */
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--marrom);
+    margin-bottom: 8px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    background: var(--branco);
+    border: 1px solid rgba(139,107,74,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--texto);
+    font-family: 'Lato', sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    resize: none;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--marrom);
+    box-shadow: 0 0 0 3px rgba(139,107,74,0.1);
+  }
+  .field input[type="date"] { color: var(--texto); }
+  .field select option { background: var(--branco); }
+  .field textarea { min-height: 110px; line-height: 1.7; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:480px){ .field-row { grid-template-columns: 1fr; } }
+
+  /* ── OPTIONS ── */
+  .opts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 20px; }
+  .opts.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  @media(max-width:480px){ .opts.grid2 { grid-template-columns: 1fr; } }
+
+  .opt {
+    background: var(--branco);
+    border: 1.5px solid rgba(139,107,74,0.25);
+    border-radius: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--texto-meio);
+    line-height: 1.5;
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .opt:hover { border-color: var(--marrom); background: var(--creme); }
+  .opt.selected {
+    border-color: var(--marrom-escuro);
+    background: var(--bege);
+    color: var(--chocolate);
+  }
+  .opt-letter {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--bege);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--marrom);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+  }
+  .opt.selected .opt-letter {
+    background: var(--marrom-escuro);
+    color: var(--creme);
+  }
+  .opt-text { flex: 1; }
+
+  /* ── SCALE ── */
+  .scale-wrap { margin-bottom: 22px; }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--texto-leve);
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .scale-btns { display: flex; gap: 6px; }
+  .scale-btn {
+    flex: 1;
+    background: var(--branco);
+    border: 1.5px solid rgba(139,107,74,0.25);
+    border-radius: 8px;
+    padding: 12px 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--texto-leve);
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .scale-btn:hover { border-color: var(--marrom); color: var(--marrom); }
+  .scale-btn.selected {
+    border-color: var(--marrom-escuro);
+    background: var(--marrom-escuro);
+    color: var(--creme);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .btn-back {
+    background: transparent;
+    border: 1.5px solid rgba(139,107,74,0.3);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    color: var(--texto-leve);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--marrom); color: var(--marrom); }
+  .btn-next {
+    flex: 1;
+    background: linear-gradient(135deg, var(--marrom-escuro), var(--chocolate));
+    border: none;
+    border-radius: 10px;
+    padding: 15px 28px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--creme);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-next:hover {
+    background: linear-gradient(135deg, var(--chocolate), #2a1810);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--sombra);
+  }
+
+  /* ── RESULT ── */
+  .result-header {
+    text-align: center;
+    padding: 20px 0 32px;
+  }
+  .result-ornament {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    color: var(--dourado);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--chocolate);
+    margin-bottom: 8px;
+  }
+  .result-sub {
+    font-size: 15px;
+    color: var(--texto-leve);
+    line-height: 1.7;
+    max-width: 460px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  .result-card {
+    background: var(--branco);
+    border: 1px solid rgba(139,107,74,0.2);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px var(--sombra);
+  }
+  .result-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--marrom-claro);
+    margin-bottom: 10px;
+  }
+  .result-perfil {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--chocolate);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .result-desc {
+    font-size: 14px;
+    color: var(--texto-meio);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+  .crencas-list { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .crencas-list li {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--texto-meio);
+    padding: 10px 14px;
+    background: var(--creme);
+    border-left: 2px solid var(--marrom-claro);
+    border-radius: 0 8px 8px 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+  }
+
+  .custo-box {
+    background: linear-gradient(135deg, var(--marrom-escuro), var(--chocolate));
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    color: var(--creme);
+  }
+  .custo-box .result-card-label { color: var(--marrom-claro); }
+  .custo-box .result-desc { color: rgba(245,240,232,0.85); }
+
+  .cta-block {
+    background: var(--bege);
+    border: 1.5px solid rgba(139,107,74,0.3);
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .cta-block h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--chocolate);
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+  .cta-block p {
+    font-size: 14px;
+    color: var(--texto-leve);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-weight: 300;
+  }
+  .btn-cta {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, var(--marrom), var(--dourado));
+    border: none;
+    border-radius: 12px;
+    padding: 18px 24px;
+    font-size: 14px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--branco);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,107,74,0.4); }
+  .cta-guarantee {
+    font-size: 12px;
+    color: var(--texto-leve);
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    text-align: center;
+    margin: 28px 0;
+    color: var(--marrom-claro);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    letter-spacing: 0.3em;
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>MAYARA TONZA</span><span>ALQUIMIA DE SI</span><span>MAYARA TONZA</span><span>ESTRATÉGIAS COM A MAY</span><span>MAYARA TONZA</span><span>ALQUIMIA DE SI</span><span>MAYARA TONZA</span><span>ESTRATÉGIAS COM A MAY</span><span>MAYARA TONZA</span><span>ALQUIMIA DE SI</span><span>MAYARA TONZA</span><span>ESTRATÉGIAS COM A MAY</span><span>MAYARA TONZA</span><span>ALQUIMIA DE SI</span><span>MAYARA TONZA</span><span>ESTRATÉGIAS COM A MAY</span>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-eyebrow">Estratégias com a May · Mayara Tonza</div>
+  <h1>Descubra qual crença está<br><em>travando seu faturamento</em></h1>
+  <p class="header-sub">Diagnóstico empresarial completo. Em 8 minutos você entende o padrão que está custando dinheiro — e chega na sessão com a May pronto para agir.</p>
+  <div class="price-tag">
+    <span>Acesso por apenas</span>
+    <strong>R$ 67</strong>
+    <s>R$ 197</s>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+  <div class="progress-top">
+    <span id="progress-label">Etapa 1 de 7</span>
+    <span id="progress-pct">14%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:14%"></div></div>
+  <div class="steps-dots" id="steps-dots"></div>
+</div>
+
+<div class="container">
+
+  <!-- STEP 1 -->
+  <div class="step active" id="step-1">
+    <div class="step-eyebrow">Etapa 1 de 7 — Identificação</div>
+    <div class="step-title">Vamos começar pelo básico</div>
+    <div class="step-desc">Essas informações personalizam seu diagnóstico e são enviadas para a May antes da sua sessão estratégica.</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Nome completo *</label>
+        <input type="text" id="nome" placeholder="Como prefere ser chamado(a)">
+      </div>
+      <div class="field">
+        <label>Data de nascimento *</label>
+        <input type="date" id="nascimento" max="2006-12-31">
+      </div>
+    </div>
+    <div class="field">
+      <label>E-mail *</label>
+      <input type="email" id="email" placeholder="Para receber seu diagnóstico completo">
+    </div>
+    <div class="field">
+      <label>WhatsApp</label>
+      <input type="tel" id="whatsapp" placeholder="(00) 00000-0000">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Segmento do negócio</label>
+        <select id="segmento">
+          <option value="">Selecione...</option>
+          <option>Serviços B2B</option>
+          <option>Comércio / Varejo</option>
+          <option>Saúde / Clínica / Consultório</option>
+          <option>Agência / Empresa criativa</option>
+          <option>Indústria / Produção</option>
+          <option>Educação / Consultoria</option>
+          <option>Tecnologia</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Faturamento mensal</label>
+        <select id="faturamento">
+          <option value="">Selecione...</option>
+          <option>Até R$ 30 mil/mês</option>
+          <option>R$ 30k – R$ 100k/mês</option>
+          <option>R$ 100k – R$ 300k/mês</option>
+          <option>R$ 300k – R$ 800k/mês</option>
+          <option>Acima de R$ 800k/mês</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="nextStep(1)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="step-2">
+    <div class="step-eyebrow">Etapa 2 de 7 — Situação atual</div>
+    <div class="step-title">Como está seu negócio hoje?</div>
+    <div class="step-desc">Seja honesto. Quanto mais real for a resposta, mais cirúrgico será o diagnóstico — e mais aproveitará a sessão com a May.</div>
+
+    <div class="callout"><strong>Qual dessas frases mais descreve onde você está agora?</strong></div>
+    <div class="opts" id="q2a">
+      <div class="opt" onclick="selectOpt(this,'q2a')"><span class="opt-letter">A</span><span class="opt-text">Faturando bem, mas me sinto preso dentro do negócio — não consigo sair sem tudo parar</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2a')"><span class="opt-letter">B</span><span class="opt-text">Empacado no mesmo faturamento há mais de um ano mesmo tentando coisas novas</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2a')"><span class="opt-letter">C</span><span class="opt-text">Tenho potencial, entrego bem, mas ganho pouco pelo que faço</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2a')"><span class="opt-letter">D</span><span class="opt-text">Sei que preciso mudar ou expandir, mas não consigo dar o próximo passo</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2a')"><span class="opt-letter">E</span><span class="opt-text">Cheguei onde queria financeiramente, mas algo essencial está faltando</span></div>
+    </div>
+
+    <div class="callout"><strong>Há quanto tempo esse padrão se repete?</strong></div>
+    <div class="opts grid2" id="q2b">
+      <div class="opt" onclick="selectOpt(this,'q2b')"><span class="opt-letter">A</span><span class="opt-text">Menos de 6 meses</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2b')"><span class="opt-letter">B</span><span class="opt-text">6 meses a 1 ano</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2b')"><span class="opt-letter">C</span><span class="opt-text">1 a 3 anos</span></div>
+      <div class="opt" onclick="selectOpt(this,'q2b')"><span class="opt-letter">D</span><span class="opt-text">Mais de 3 anos</span></div>
+    </div>
+
+    <div class="callout"><strong>Qual foi sua última tentativa de mudar essa situação?</strong></div>
+    <div class="field">
+      <textarea id="q2c" placeholder="Ex: Contratei uma agência, fiz um curso, contratei um consultor... o que tentou e o que aconteceu?" rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(2)">← Voltar</button>
+      <button class="btn-next" onclick="nextStep(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="step-3">
+    <div class="step-eyebrow">Etapa 3 de 7 — Padrão de decisão</div>
+    <div class="step-title">Como você decide — e o que acontece depois</div>
+    <div class="step-desc">Responda com o que realmente acontece, não com o que deveria acontecer. Esse bloco identifica o loop que se repete no seu negócio.</div>
+
+    <div class="callout"><strong>Quando você delega uma tarefa e ela vem errada, sua primeira reação é:</strong></div>
+    <div class="opts" id="q3a">
+      <div class="opt" onclick="selectOpt(this,'q3a')"><span class="opt-letter">A</span><span class="opt-text">Refaço eu mesmo — mais rápido do que explicar de novo</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3a')"><span class="opt-letter">B</span><span class="opt-text">Fico frustrado mas dou outra chance com mais instrução</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3a')"><span class="opt-letter">C</span><span class="opt-text">Questiono se essa pessoa é a certa para a função</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3a')"><span class="opt-letter">D</span><span class="opt-text">Assumo que expliquei mal e revejo meu processo de delegação</span></div>
+    </div>
+
+    <div class="callout"><strong>Quando uma oportunidade grande aparece, você:</strong></div>
+    <div class="opts" id="q3b">
+      <div class="opt" onclick="selectOpt(this,'q3b')"><span class="opt-letter">A</span><span class="opt-text">Age rápido — prefere errar em movimento do que perder a janela</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3b')"><span class="opt-letter">B</span><span class="opt-text">Analisa muito antes de decidir — e às vezes a janela fecha</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3b')"><span class="opt-letter">C</span><span class="opt-text">Consulta outras pessoas antes de se comprometer</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3b')"><span class="opt-letter">D</span><span class="opt-text">Sente que ainda não está pronto(a) para aquele nível</span></div>
+    </div>
+
+    <div class="callout"><strong>Qual dessas situações mais se repetiu nos últimos 12 meses?</strong></div>
+    <div class="opts" id="q3c">
+      <div class="opt" onclick="selectOpt(this,'q3c')"><span class="opt-letter">A</span><span class="opt-text">Troquei de estratégia ou fornecedor mais de duas vezes sem resultado diferente</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3c')"><span class="opt-letter">B</span><span class="opt-text">Dei desconto ou cobrei menos do que deveria para não perder um cliente</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3c')"><span class="opt-letter">C</span><span class="opt-text">Evitei uma decisão importante por mais de 30 dias sem motivo concreto</span></div>
+      <div class="opt" onclick="selectOpt(this,'q3c')"><span class="opt-letter">D</span><span class="opt-text">Trabalhei em algo que qualquer pessoa da minha equipe poderia ter feito</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(3)">← Voltar</button>
+      <button class="btn-next" onclick="nextStep(3)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" id="step-4">
+    <div class="step-eyebrow">Etapa 4 de 7 — Crenças e autossabotagem</div>
+    <div class="step-title">O que passa pela sua cabeça quando o assunto é crescimento</div>
+    <div class="step-desc">Esse é o bloco mais importante. Responda com sinceridade — não existe resposta certa ou errada aqui.</div>
+
+    <div class="callout"><strong>Quando você pensa em dobrar seu faturamento nos próximos 12 meses, o que aparece primeiro na sua cabeça?</strong></div>
+    <div class="field">
+      <textarea id="q4a" placeholder="Escreva o primeiro pensamento que surgiu — mesmo que pareça irracional ou negativo. A May vai analisar isso antes da sua sessão."></textarea>
+    </div>
+
+    <div class="callout"><strong>Quais dessas frases já passaram pela sua cabeça?</strong> (marque todas que se aplicam)</div>
+    <div class="opts" id="q4b">
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Se eu crescer demais, vou perder o controle do que construí"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Não sei se mereço cobrar mais — e se o cliente achar caro?"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Funcionário é problema — prefiro fazer eu mesmo do que me arriscar"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Já tentei antes e não funcionou — e se eu investir e perder tudo de novo?"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Meu mercado é diferente — o que funciona pra outros pode não funcionar pra mim"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Quando as coisas melhorarem, aí eu faço isso"</span></div>
+      <div class="opt multi" onclick="toggleOpt(this)"><span class="opt-letter">✓</span><span class="opt-text">"Não quero parecer ganancioso(a) querendo mais"</span></div>
+    </div>
+
+    <div class="callout"><strong>Existe algo que você sabe que precisa fazer, mas continua adiando?</strong> O que é e há quanto tempo?</div>
+    <div class="field">
+      <textarea id="q4c" placeholder="Ex: Contratar alguém, subir meu preço, demitir um cliente ruim, mudar de modelo de negócio..." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(4)">← Voltar</button>
+      <button class="btn-next" onclick="nextStep(4)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" id="step-5">
+    <div class="step-eyebrow">Etapa 5 de 7 — Impacto financeiro</div>
+    <div class="step-title">O custo real do que está acontecendo</div>
+    <div class="step-desc">Essa é a parte que a maioria dos empresários nunca para para calcular. Vamos transformar o padrão em número.</div>
+
+    <div class="callout"><strong>Quanto você estima que está deixando de ganhar por mês por causa desse padrão?</strong></div>
+    <div class="opts grid2" id="q5a">
+      <div class="opt" onclick="selectOpt(this,'q5a')"><span class="opt-letter">A</span><span class="opt-text">Menos de R$ 5 mil/mês</span></div>
+      <div class="opt" onclick="selectOpt(this,'q5a')"><span class="opt-letter">B</span><span class="opt-text">R$ 5k – R$ 20k/mês</span></div>
+      <div class="opt" onclick="selectOpt(this,'q5a')"><span class="opt-letter">C</span><span class="opt-text">R$ 20k – R$ 80k/mês</span></div>
+      <div class="opt" onclick="selectOpt(this,'q5a')"><span class="opt-letter">D</span><span class="opt-text">Mais de R$ 80k/mês</span></div>
+    </div>
+
+    <div class="callout"><strong>Quantas horas por semana você trabalha em coisas que só você poderia fazer?</strong></div>
+    <div class="scale-wrap">
+      <div class="scale-labels"><span>Quase nenhuma</span><span>A maior parte do tempo</span></div>
+      <div class="scale-btns" id="q5b">
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">1</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">2</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">3</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">4</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">5</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">6</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">7</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">8</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">9</div>
+        <div class="scale-btn" onclick="selectScale(this,'q5b')">10</div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>Se você resolvesse esse padrão nos próximos 6 meses, qual seria o impacto no seu negócio?</strong></div>
+    <div class="field">
+      <textarea id="q5c" placeholder="Pense em faturamento, equipe, qualidade de vida, tempo livre. Seja específico." rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(5)">← Voltar</button>
+      <button class="btn-next" onclick="nextStep(5)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" id="step-6">
+    <div class="step-eyebrow">Etapa 6 de 7 — Contexto pessoal</div>
+    <div class="step-title">O negócio é reflexo de quem está à frente dele</div>
+    <div class="step-desc">Essas perguntas parecem pessoais — e são. Os padrões que travam o negócio quase sempre começaram antes do negócio existir.</div>
+
+    <div class="callout"><strong>Como você se descreveria como líder hoje?</strong></div>
+    <div class="opts" id="q6a">
+      <div class="opt" onclick="selectOpt(this,'q6a')"><span class="opt-letter">A</span><span class="opt-text">Executor — faço acontecer, mas me sobrecarrego</span></div>
+      <div class="opt" onclick="selectOpt(this,'q6a')"><span class="opt-letter">B</span><span class="opt-text">Estrategista — penso bem, mas tenho dificuldade de implementar</span></div>
+      <div class="opt" onclick="selectOpt(this,'q6a')"><span class="opt-letter">C</span><span class="opt-text">Relacional — cuido das pessoas, mas evito conflito e decisões difíceis</span></div>
+      <div class="opt" onclick="selectOpt(this,'q6a')"><span class="opt-letter">D</span><span class="opt-text">Criativo — tenho muitas ideias, mas perco foco com facilidade</span></div>
+    </div>
+
+    <div class="callout"><strong>Existe algum momento da sua história que ainda influencia como você decide hoje?</strong></div>
+    <div class="field">
+      <textarea id="q6b" placeholder="Pode ser uma falência anterior, uma relação difícil, uma criação específica, uma perda... não precisa ser óbvio." rows="3"></textarea>
+    </div>
+
+    <div class="callout"><strong>O que as pessoas mais próximas diriam que é seu maior ponto cego como empresário(a)?</strong></div>
+    <div class="field">
+      <textarea id="q6c" placeholder="O que seu sócio, cônjuge ou funcionário mais antigo diria que você ainda não enxerga em si mesmo(a)?" rows="3"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(6)">← Voltar</button>
+      <button class="btn-next" onclick="nextStep(6)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step" id="step-7">
+    <div class="step-eyebrow">Etapa 7 de 7 — Intenção</div>
+    <div class="step-title">O que você quer que mude — de verdade</div>
+    <div class="step-desc">Última etapa. Essas respostas definem como a May vai conduzir sua sessão estratégica.</div>
+
+    <div class="callout"><strong>Em uma frase: qual resultado você quer nos próximos 12 meses?</strong></div>
+    <div class="field">
+      <textarea id="q7a" placeholder="Seja específico — número, situação, sensação. Ex: Faturar R$ 500k/mês trabalhando menos de 40h semanais." rows="3"></textarea>
+    </div>
+
+    <div class="callout"><strong>O que você já tentou e não funcionou?</strong></div>
+    <div class="field">
+      <textarea id="q7b" placeholder="Consultorias, cursos, mentorias, sistemas, contratações... o que você já investiu que não deu o resultado esperado?" rows="3"></textarea>
+    </div>
+
+    <div class="callout"><strong>O que te impediria de implementar uma mudança grande nos próximos 90 dias?</strong></div>
+    <div class="opts" id="q7c">
+      <div class="opt" onclick="selectOpt(this,'q7c')"><span class="opt-letter">A</span><span class="opt-text">Falta de tempo — estou sempre apagando incêndio</span></div>
+      <div class="opt" onclick="selectOpt(this,'q7c')"><span class="opt-letter">B</span><span class="opt-text">Falta de dinheiro para investir agora</span></div>
+      <div class="opt" onclick="selectOpt(this,'q7c')"><span class="opt-letter">C</span><span class="opt-text">Medo de que não funcione — já investi antes sem resultado</span></div>
+      <div class="opt" onclick="selectOpt(this,'q7c')"><span class="opt-letter">D</span><span class="opt-text">Não sei por onde começar — muitas coisas para resolver</span></div>
+      <div class="opt" onclick="selectOpt(this,'q7c')"><span class="opt-letter">E</span><span class="opt-text">Nada me impediria se eu tivesse clareza do que fazer</span></div>
+    </div>
+
+    <div class="callout"><strong>Qual o nível de urgência que você sente em resolver isso?</strong></div>
+    <div class="scale-wrap">
+      <div class="scale-labels"><span>Posso esperar</span><span>Preciso resolver agora</span></div>
+      <div class="scale-btns" id="q7d">
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">1</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">2</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">3</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">4</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">5</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">6</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">7</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">8</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">9</div>
+        <div class="scale-btn" onclick="selectScale(this,'q7d')">10</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="prevStep(7)">← Voltar</button>
+      <button class="btn-next" onclick="showResult()">Ver meu diagnóstico →</button>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="step" id="step-result">
+    <div class="result-header">
+      <div class="result-ornament">✦</div>
+      <div class="result-title">Seu diagnóstico está pronto</div>
+      <p class="result-sub">Com base nas suas respostas, identificamos o padrão central que está limitando seu resultado financeiro.</p>
+    </div>
+
+    <div class="result-card">
+      <div class="result-card-label">Seu perfil identificado</div>
+      <div class="result-perfil" id="result-perfil"></div>
+      <div class="result-desc" id="result-desc"></div>
+      <ul class="crencas-list" id="result-crencas"></ul>
+    </div>
+
+    <div class="custo-box">
+      <div class="result-card-label">O que esse padrão está te custando</div>
+      <div class="result-desc" id="result-custo"></div>
+    </div>
+
+    <div class="divider">· · ·</div>
+
+    <div class="cta-block">
+      <h3>Sessão estratégica com a May</h3>
+      <p>Seu diagnóstico completo já foi enviado para a May. Na sessão ela chega sabendo exatamente onde está o nó — sem aquecimento, sem enrolação. Direto no que está custando dinheiro.</p>
+      <a class="btn-cta" id="btn-agendar" href="LINK_GOOGLE_CALENDAR_AQUI" target="_blank">Agendar minha sessão com a May Tonza</a>
+      <p class="cta-guarantee">✓ Sessão de 60 min com a Mayara Tonza &nbsp;·&nbsp; ✓ Diagnóstico enviado com antecedência &nbsp;·&nbsp; ✓ Garantia incondicional de 7 dias</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── SETUP DOTS ──
+  const totalSteps = 7;
+  let currentStep = 1;
+  const dotsWrap = document.getElementById('steps-dots');
+  for (let i = 1; i <= totalSteps; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 1 ? ' active' : '');
+    d.id = 'dot-' + i;
+    dotsWrap.appendChild(d);
+  }
+
+  function updateProgress(step) {
+    const pct = Math.round((step / totalSteps) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = 'Etapa ' + step + ' de ' + totalSteps;
+    document.getElementById('progress-pct').textContent = pct + '%';
+    for (let i = 1; i <= totalSteps; i++) {
+      const d = document.getElementById('dot-' + i);
+      d.className = 'dot';
+      if (i < step) d.classList.add('done');
+      else if (i === step) d.classList.add('active');
+    }
+  }
+
+  // VALIDAÇÃO
+  function showError(msg, targetEl) {
+    document.querySelectorAll('.validation-error').forEach(e => e.remove());
+    const err = document.createElement('div');
+    err.className = 'validation-error';
+    err.textContent = 'Atenção: ' + msg;
+    err.style.cssText = 'background:#FFF8E8;border:1.5px solid #C9A84C;border-radius:8px;padding:12px 16px;font-size:13px;font-weight:700;color:#8B5E1E;margin-bottom:14px;';
+    if (targetEl) {
+      targetEl.insertAdjacentElement('beforebegin', err);
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      const step = document.querySelector('.step.active');
+      step.insertBefore(err, step.firstChild);
+    }
+    setTimeout(() => { if (err.parentNode) err.remove(); }, 5000);
+  }
+
+  function validarStep(step) {
+    document.querySelectorAll('.validation-error').forEach(e => e.remove());
+    if (step === 1) {
+      if (!document.getElementById('nome').value.trim()) { showError('Por favor, informe seu nome.', document.getElementById('nome').parentElement); return false; }
+      const em = document.getElementById('email').value.trim();
+      if (!em || !em.includes('@')) { showError('Por favor, informe um e-mail válido.', document.getElementById('email').parentElement); return false; }
+      if (!document.getElementById('nascimento').value) { showError('Por favor, informe sua data de nascimento.', document.getElementById('nascimento').parentElement); return false; }
+      return true;
+    }
+    if (step === 2) {
+      if (!document.querySelector('#q2a .opt.selected')) { showError('Selecione uma opção antes de continuar.', document.getElementById('q2a')); return false; }
+      if (!document.querySelector('#q2b .opt.selected')) { showError('Selecione há quanto tempo esse padrão se repete.', document.getElementById('q2b')); return false; }
+      return true;
+    }
+    if (step === 3) {
+      if (!document.querySelector('#q3a .opt.selected')) { showError('Selecione sua reação quando a delegação falha.', document.getElementById('q3a')); return false; }
+      if (!document.querySelector('#q3b .opt.selected')) { showError('Selecione como você reage a oportunidades.', document.getElementById('q3b')); return false; }
+      if (!document.querySelector('#q3c .opt.selected')) { showError('Selecione o padrão que mais se repetiu.', document.getElementById('q3c')); return false; }
+      return true;
+    }
+    if (step === 4) {
+      if (!document.getElementById('q4a').value.trim()) { showError('Escreva o primeiro pensamento que surgiu — mesmo que pareça negativo. Esse é o dado mais valioso para a May.', document.getElementById('q4a').parentElement); return false; }
+      if (!document.querySelector('#q4b .opt.selected')) { showError('Marque pelo menos uma crença que já passou pela sua cabeça.', document.getElementById('q4b')); return false; }
+      return true;
+    }
+    if (step === 5) {
+      if (!document.querySelector('#q5a .opt.selected')) { showError('Selecione o impacto financeiro estimado.', document.getElementById('q5a')); return false; }
+      if (!document.querySelector('#q5b .scale-btn.selected')) { showError('Indique quantas horas por semana você trabalha como executor.', document.getElementById('q5b')); return false; }
+      return true;
+    }
+    if (step === 6) {
+      if (!document.querySelector('#q6a .opt.selected')) { showError('Selecione como você se descreveria como líder.', document.getElementById('q6a')); return false; }
+      if (!document.getElementById('q6c').value.trim()) { showError('Responda qual é seu maior ponto cego — essa informação é essencial para a May.', document.getElementById('q6c').parentElement); return false; }
+      return true;
+    }
+    if (step === 7) {
+      if (!document.getElementById('q7a').value.trim()) { showError('Descreva o resultado que quer alcançar em 12 meses.', document.getElementById('q7a').parentElement); return false; }
+      if (!document.querySelector('#q7c .opt.selected')) { showError('Selecione o que te impediria de implementar uma mudança.', document.getElementById('q7c')); return false; }
+      if (!document.querySelector('#q7d .scale-btn.selected')) { showError('Indique o nível de urgência que você sente.', document.getElementById('q7d')); return false; }
+      return true;
+    }
+    return true;
+  }
+
+  function nextStep(from) {
+    if (!validarStep(from)) return;
+    document.getElementById('step-' + from).classList.remove('active');
+    currentStep = from + 1;
+    document.getElementById('step-' + currentStep).classList.add('active');
+    updateProgress(currentStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function prevStep(from) {
+    document.querySelectorAll('.validation-error').forEach(e => e.remove());
+    document.getElementById('step-' + from).classList.remove('active');
+    currentStep = from - 1;
+    document.getElementById('step-' + currentStep).classList.add('active');
+    updateProgress(currentStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectOpt(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .opt:not(.multi)').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+  function toggleOpt(el) { el.classList.toggle('selected'); }
+  function selectScale(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .scale-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function getOpt(groupId) {
+    const s = document.querySelector('#' + groupId + ' .opt.selected');
+    return s ? s.querySelector('.opt-text').textContent.trim() : '';
+  }
+  function getMulti(groupId) {
+    return Array.from(document.querySelectorAll('#' + groupId + ' .opt.selected')).map(o => o.querySelector('.opt-text').textContent.trim());
+  }
+  function getScale(groupId) {
+    const s = document.querySelector('#' + groupId + ' .scale-btn.selected');
+    return s ? parseInt(s.textContent) : 0;
+  }
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  // ── CALC PERFIL ──
+  function calcPerfil() {
+    const scores = { controlador: 0, paralisado: 0, subprecificador: 0, escalador: 0, vazio: 0 };
+    const sit = getOpt('q2a');
+    const dec = getOpt('q3a');
+    const loop = getOpt('q3c');
+    const crencas = getMulti('q4b');
+    const horas = getScale('q5b');
+
+    if (sit.includes('preso')) scores.controlador += 3;
+    if (sit.includes('Empacado')) scores.escalador += 3;
+    if (sit.includes('ganho pouco')) scores.subprecificador += 3;
+    if (sit.includes('próximo passo')) scores.paralisado += 3;
+    if (sit.includes('algo essencial')) scores.vazio += 3;
+
+    if (dec.includes('Refaço eu mesmo')) scores.controlador += 2;
+    if (dec.includes('Questiono se essa pessoa')) scores.escalador += 1;
+
+    if (loop.includes('Troquei de estratégia')) scores.escalador += 2;
+    if (loop.includes('desconto ou cobrei menos')) scores.subprecificador += 2;
+    if (loop.includes('Evitei uma decisão')) scores.paralisado += 2;
+    if (loop.includes('qualquer pessoa da minha equipe')) scores.controlador += 2;
+
+    crencas.forEach(c => {
+      if (c.includes('perder o controle')) scores.controlador += 2;
+      if (c.includes('mereço cobrar')) scores.subprecificador += 2;
+      if (c.includes('Funcionário é problema')) scores.controlador += 2;
+      if (c.includes('não funcionou')) scores.paralisado += 2;
+      if (c.includes('ganancioso')) scores.subprecificador += 1;
+      if (c.includes('melhorarem')) scores.paralisado += 1;
+    });
+
+    if (horas >= 8) scores.controlador += 2;
+    if (horas <= 3) scores.vazio += 1;
+
+    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  const perfis = {
+    controlador: {
+      nome: "O Solucionador Exausto — Perfil Controlador",
+      desc: "Você construiu um negócio que funciona — mas só quando você está presente. A centralização não é falta de delegação: é uma crença profunda de que as coisas só ficam certas quando você mesmo faz. O teto do seu negócio é o limite da sua própria capacidade humana.",
+      crencas: ['"Se eu não fizer, vai sair errado"', '"Mais rápido fazer eu mesmo do que ensinar"', '"Funcionário não faz com o mesmo cuidado que eu"'],
+      custo: "Cada hora que você passa executando é uma hora que não passa estrategizando, vendendo ou crescendo. Empresas que centralizam no dono crescem até o limite de horas do dono — e param. O custo não aparece no DRE, mas aparece no teto do faturamento todo mês."
+    },
+    paralisado: {
+      nome: "O Potencial Bloqueado — Perfil Paralisado",
+      desc: "Você tem clareza do que precisa fazer — mas algo sempre adia a decisão. Não é falta de coragem: é um mecanismo de proteção que o seu cérebro criou depois de uma experiência de perda ou frustração. Esse freio não distingue risco real de risco percebido.",
+      crencas: ['"E se eu investir e não der certo?"', '"Quando o momento certo chegar, eu faço"', '"Meu caso é diferente — o que funcionou pra outros pode não funcionar pra mim"'],
+      custo: "Paralisia tem custo mensal calculável. Cada mês sem agir é um mês de faturamento que ficou na mesa. Em 12 meses de indecisão, a conta pode chegar a R$ 100k+ dependendo do seu modelo de negócio."
+    },
+    subprecificador: {
+      nome: "A Entrega Desvalorizada — Perfil Subprecificador",
+      desc: "Você entrega bem — seus clientes sabem disso. O problema é que você cobra menos do que vale por uma razão que não tem nada a ver com mercado: você ainda não acredita completamente que merece o preço certo. Precificação é autoestima aplicada ao negócio.",
+      crencas: ['"Se eu cobrar mais, o cliente vai embora"', '"Não quero parecer ganancioso(a)"', '"Ainda não estou pronto(a) para cobrar esse valor"'],
+      custo: "Se você cobra 40% abaixo do mercado e tem 20 clientes, está deixando o equivalente a 8 clientes na mesa todo mês — sem precisar vender mais nada. O reajuste de preço com o cliente certo é o aumento de faturamento mais rápido que existe."
+    },
+    escalador: {
+      nome: "O Escalador Travado — Perfil Loop de Decisão",
+      desc: "Você tenta, muda, tenta de novo — e o resultado é sempre parecido. Não é azar nem mercado: é um padrão de tomada de decisão que se repete. Impulsividade, troca de rota frequente e instabilidade de equipe são sintomas do mesmo problema de base.",
+      crencas: ['"A próxima estratégia vai ser diferente"', '"O problema é que ainda não achei o profissional certo"', '"Preciso de algo novo — esse modelo já esgotou"'],
+      custo: "Cada troca de estratégia tem custo de implementação, aprendizado e tempo. Em 2 anos de loop sem mudar o padrão de base, esse valor pode superar facilmente R$ 200k em investimentos que não se acumularam."
+    },
+    vazio: {
+      nome: "O Bem-Sucedido sem Direção — Perfil Propósito",
+      desc: "Você chegou onde queria — e descobriu que não era exatamente isso. Não é ingratidão: é um sinal de que o negócio foi construído para um objetivo externo, e agora precisa ser recalibrado para um propósito interno. Sem isso, as decisões ficam lentas e o crescimento estagna.",
+      crencas: ['"Tenho tudo — por que não me sinto completo(a)?"', '"Não sei mais por que faço o que faço"', '"Parece que estou no piloto automático"'],
+      custo: "Negócios em piloto automático perdem entre 20% e 40% do crescimento potencial ao ano. Um dono sem propósito toma decisões menores, evita riscos necessários e perde oportunidades que um dono energizado abraçaria sem hesitar."
+    }
+  };
+
+  // ── COLETA DADOS PRA MAY ──
+  function coletarDados() {
+    return {
+      nome: getVal('nome'),
+      nascimento: getVal('nascimento'),
+      email: getVal('email'),
+      whatsapp: getVal('whatsapp'),
+      segmento: getVal('segmento'),
+      faturamento: getVal('faturamento'),
+      situacaoAtual: getOpt('q2a'),
+      tempoPadrao: getOpt('q2b'),
+      ultimaTentativa: getVal('q2c'),
+      reacaoDelegacao: getOpt('q3a'),
+      reacaoOportunidade: getOpt('q3b'),
+      padraoRepetido: getOpt('q3c'),
+      pensamentoDobrar: getVal('q4a'),
+      crencasMarcadas: getMulti('q4b').join(' | '),
+      acaoAdiada: getVal('q4c'),
+      perdaMensal: getOpt('q5a'),
+      horasExecutor: getScale('q5b'),
+      impactoEsperado: getVal('q5c'),
+      perfilLider: getOpt('q6a'),
+      historiaInfluencia: getVal('q6b'),
+      pontoCego: getVal('q6c'),
+      resultado12meses: getVal('q7a'),
+      tentativasFalharam: getVal('q7b'),
+      obstaculoMudanca: getOpt('q7c'),
+      urgencia: getScale('q7d'),
+      perfilIdentificado: calcPerfil()
+    };
+  }
+
+  // ── SHOW RESULT ──
+  function showResult() {
+    const dados = coletarDados();
+    const p = dados.perfilIdentificado;
+    const info = perfis[p];
+
+    // Esconde progress
+    document.getElementById('progress-wrap').style.display = 'none';
+
+    document.getElementById('step-7').classList.remove('active');
+    document.getElementById('step-result').classList.add('active');
+
+    document.getElementById('result-perfil').textContent = info.nome;
+    document.getElementById('result-desc').textContent = info.desc;
+    document.getElementById('result-custo').textContent = info.custo;
+
+    const ul = document.getElementById('result-crencas');
+    ul.innerHTML = '';
+    info.crencas.forEach(c => {
+      const li = document.createElement('li');
+      li.textContent = c;
+      ul.appendChild(li);
+    });
+
+    // Salva no localStorage pra painel da May
+    const registros = JSON.parse(localStorage.getItem('may_diagnosticos') || '[]');
+    dados.dataHora = new Date().toISOString();
+    dados.perfilNome = info.nome;
+    registros.push(dados);
+    localStorage.setItem('may_diagnosticos', JSON.stringify(registros));
+
+    // Envia para May via Formspree
+    const FORMSPREE_ID = 'SEU_FORMSPREE_ID';
+    if (FORMSPREE_ID !== 'SEU_FORMSPREE_ID') {
+      const corpo = Object.entries(dados).map(([k,v]) => k + ': ' + v).join('\n');
+      fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _subject: 'Novo diagnóstico — ' + dados.nome + ' (' + info.nome + ')',
+          nome: dados.nome,
+          email: dados.email,
+          whatsapp: dados.whatsapp,
+          perfil: info.nome,
+          urgencia: dados.urgencia + '/10',
+          faturamento: dados.faturamento,
+          pensamento_chave: dados.pensamentoDobrar,
+          resultado_desejado: dados.resultado12meses,
+          crencas: dados.crencasMarcadas,
+          dados_completos: corpo
+        })
+      }).catch(() => {});
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+<!-- GUIA PUBLICAÇÃO - remover após publicar -->
+<div id="guia-pub" style="position:fixed;bottom:16px;right:16px;z-index:9999;max-width:320px;">
+  <div style="background:#3B2315;border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-family:Lato,sans-serif;font-size:12px;font-weight:700;color:#E8C97A;letter-spacing:0.08em;text-transform:uppercase;">Guia de Publicação</span>
+      <button onclick="document.getElementById('guia-pub').style.display='none'" style="background:none;border:none;color:#9B7B5E;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+    <div id="guia-steps">
+      <div style="font-family:Lato,sans-serif;font-size:13px;color:#E8DDD0;line-height:1.7;">
+        <p style="margin-bottom:8px;"><strong style="color:#C9A84C;">Passo 1 — GitHub (grátis)</strong><br>
+        Acesse <a href="https://github.com" target="_blank" style="color:#C4A882;">github.com</a> → Crie uma conta → Clique em "New repository" → Nome: <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">diagnostico-may</code> → Public → Create</p>
+        <p style="margin-bottom:8px;"><strong style="color:#C9A84C;">Passo 2 — Upload do arquivo</strong><br>
+        Dentro do repositório → "Add file" → "Upload files" → arraste o arquivo <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">diagnostico_alquimia_may.html</code> → Renomeie para <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">index.html</code> → "Commit changes"</p>
+        <p style="margin-bottom:8px;"><strong style="color:#C9A84C;">Passo 3 — Ativar o site</strong><br>
+        Settings → Pages → Source: "Deploy from branch" → Branch: main → Folder: / (root) → Save<br>
+        Em 2 minutos o link aparece:<br>
+        <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">seuusuario.github.io/diagnostico-may</code></p>
+        <p style="margin-bottom:8px;"><strong style="color:#C9A84C;">Passo 4 — Receber e-mails (Formspree)</strong><br>
+        Acesse <a href="https://formspree.io" target="_blank" style="color:#C4A882;">formspree.io</a> → Crie conta com o e-mail da May → "New Form" → copie o código que começa com <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">f/xxxxxxxx</code> → Abra o arquivo e substitua <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">SEU_FORMSPREE_ID</code> pelo código copiado</p>
+        <p style="margin-bottom:8px;"><strong style="color:#C9A84C;">Passo 5 — Link da bio</strong><br>
+        Copie o link do GitHub Pages → Cole no Instagram em "Site" ou use <a href="https://linktr.ee" target="_blank" style="color:#C4A882;">linktr.ee</a> → Pronto para disparar!</p>
+        <p style="margin-bottom:0;"><strong style="color:#C9A84C;">Passo 6 — Google Calendar</strong><br>
+        calendar.google.com → Criar → "Agendamento de compromisso" → Defina horários disponíveis → Copie o link → Substitua <code style="background:#5C3D2E;padding:1px 5px;border-radius:4px;">LINK_GOOGLE_CALENDAR_AQUI</code> no arquivo</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
