@@ -1107,10 +1107,10 @@
     localStorage.setItem('may_diagnosticos', JSON.stringify(registros));
 
     // Envia para May via Formspree (form nativo)
-    const FORMSPREE_ID = 'xnjwjeaj';
-    if (FORMSPREE_ID === 'xnjwjeaj') {
+    const FORMSPREE_ID = 'e63b6af2-dc52-422d-a6ef-5dd0685b5337';
+    if (FORMSPREE_ID === 'e63b6af2-dc52-422d-a6ef-5dd0685b5337') {
       const corpo = Object.entries(dados).map(([k,v]) => k + ': ' + v).join('\n');
-      fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+      fetch('https://api.web3forms.com/submit?access_key=' + FORMSPREE_ID, {
         method: 'POST',
         headers: { 'Accept': 'application/json' },
         body: JSON.stringify({
