@@ -1106,9 +1106,9 @@
     registros.push(dados);
     localStorage.setItem('may_diagnosticos', JSON.stringify(registros));
 
-    // Envia para May via Formspree
+    // Envia para May via Formspree (form nativo)
     const FORMSPREE_ID = 'xnjwjeaj';
-    if (FORMSPREE_ID !== 'xnjwjeaj') {
+    if (FORMSPREE_ID === 'xnjwjeaj') {
       const corpo = Object.entries(dados).map(([k,v]) => k + ': ' + v).join('\n');
       fetch('https://formspree.io/f/' + FORMSPREE_ID, {
         method: 'POST',
