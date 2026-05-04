@@ -1110,9 +1110,9 @@
     const FORMSPREE_ID = 'e63b6af2-dc52-422d-a6ef-5dd0685b5337';
     if (FORMSPREE_ID === 'e63b6af2-dc52-422d-a6ef-5dd0685b5337') {
       const corpo = Object.entries(dados).map(([k,v]) => k + ': ' + v).join('\n');
-      fetch('https://api.web3forms.com/submit?access_key=' + FORMSPREE_ID, {
+      fetch('https://api.web3forms.com/submit, {
         method: 'POST',
-        headers: { 'Accept': 'application/json', 'Access-Key': 'e63b6af2-dc52-422d-a6ef-5dd0685b5337' },
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({
           _subject: 'Novo diagnóstico — ' + dados.nome + ' (' + info.nome + ')',
           access_key: 'e63b6af2-dc52-422d-a6ef-5dd0685b5337', nome: dados.nome,
